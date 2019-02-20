@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">GramDispatch</string>
+    <string name="enter_username_text">Please enter username</string>
+    <string name="login_button">Login</string>
+    <string name="enter_order_number_text">Order Number</string>
+    <string name="get_orders_button">Get Job Order</string>
+    <string name="loginForm">Login Form</string>
+    <string name="username_label">Username:</string>
+    <string name="password_label">Password:</string>
+    <string name="enter_password_text">Please enter password</string>
+</resources>
