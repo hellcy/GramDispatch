@@ -8,4 +8,6 @@
     <string name="username_label">Username:</string>
     <string name="password_label">Password:</string>
     <string name="enter_password_text">Please enter password</string>
+    <string name="save_order_button">SAVE</string>
+    <string name="upload_order_button">UPLOAD</string>
 </resources>

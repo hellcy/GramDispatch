@@ -9,7 +9,7 @@
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/activity_main"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:paddingBottom="16dp"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
@@ -37,7 +37,18 @@
                         android:id="@+id/OrderNumberView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_span="3"
                         />
+
+                    <Button
+                        android:id="@+id/saveOrderButton"
+                        android:layout_column="3"
+                        android:text="@string/save_order_button" />
+
+                    <Button
+                        android:id="@+id/uploadOrderButton"
+                        android:layout_column="4"
+                        android:text="@string/upload_order_button" />
                 </TableRow>
                 <!-- Add common columns in the table row. -->
                 <TableRow

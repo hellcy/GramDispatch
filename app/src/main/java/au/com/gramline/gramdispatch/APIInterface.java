@@ -1,5 +1,6 @@
 package au.com.gramline.gramdispatch;
 
+import au.com.gramline.gramdispatch.pojo.CollectedOrderList;
 import au.com.gramline.gramdispatch.pojo.JobOrderList;
 import au.com.gramline.gramdispatch.pojo.JobOrderListTest;
 
@@ -20,5 +21,9 @@ public interface APIInterface {
     // get the specific job order details
     @GET("/Scanner/api/JobOrder/get?")
     Call<JobOrderList> doGetJobOrderList(@Query("HDR_SEQNO") String HDR_SEQNO);
+
+    // create list of orders
+    @POST("/Scanner/api/JobOrder")
+    Call<CollectedOrderList> createCollectedOrderList(@Body CollectedOrderList collectedOrderList);
 
 }
