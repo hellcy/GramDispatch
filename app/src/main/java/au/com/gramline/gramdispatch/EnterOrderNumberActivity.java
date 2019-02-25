@@ -10,7 +10,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 public class EnterOrderNumberActivity extends AppCompatActivity {
-    public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
+    public static final String EXTRA_MESSAGE_THREE = "com.example.GramDispatch.MESSAGE";
+    public static final String EXTRA_MESSAGE_TWO = "com.example.GramDispatch.MESSAGE2";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,12 +26,23 @@ public class EnterOrderNumberActivity extends AppCompatActivity {
         textView.setText("You are logged in as: " + message);
     }
 
-    /** Called when the user taps the Send button */
+    /** Called when the user taps the get job order button */
     public void sendMessage(View view) {
         Intent intent = new Intent(this, DisplayOrdersActivity.class);
         EditText editText = (EditText) findViewById(R.id.enterOrderNumberText);
         String message = editText.getText().toString();
-        intent.putExtra(EXTRA_MESSAGE, message);
+        intent.putExtra(EXTRA_MESSAGE_THREE, message);
+        startActivity(intent);
+    }
+
+    /** Called when the user taps the continue order button */
+    public void continueOrder(View view) {
+        Intent intent = new Intent(this, DisplayOrdersActivity.class);
+        EditText editText = (EditText) findViewById(R.id.enterOrderNumberText);
+        String message = editText.getText().toString();
+        String resume = "resume";
+        intent.putExtra(EXTRA_MESSAGE_THREE, message);
+        intent.putExtra(EXTRA_MESSAGE_TWO, resume);
         startActivity(intent);
     }
 }

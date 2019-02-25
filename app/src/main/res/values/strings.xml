@@ -15,4 +15,5 @@
     <string name="description_header">Description</string>
     <string name="qty_required_header">Qty Required</string>
     <string name="qty_collected_header">Qty Collected</string>
+    <string name="continue_order_button">Continue Order</string>
 </resources>

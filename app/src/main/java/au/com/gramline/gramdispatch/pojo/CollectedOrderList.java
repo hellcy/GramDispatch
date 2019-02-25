@@ -8,7 +8,7 @@ import java.util.List;
 
 public class CollectedOrderList {
     @SerializedName("results")
-    public List<CollectedOrder> data = new ArrayList<>();
+    public List<CollectedOrder> results = new ArrayList<>();
 
     public static class CollectedOrder {
         @SerializedName("SEQNO")
