@@ -10,4 +10,9 @@
     <string name="enter_password_text">Please enter password</string>
     <string name="save_order_button">SAVE</string>
     <string name="upload_order_button">UPLOAD</string>
+    <string name="sequence_number_header">Seq No</string>
+    <string name="stockcode_header">StockCode</string>
+    <string name="description_header">Description</string>
+    <string name="qty_required_header">Qty Required</string>
+    <string name="qty_collected_header">Qty Collected</string>
 </resources>

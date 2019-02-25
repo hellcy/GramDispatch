@@ -13,7 +13,7 @@
         android:layout_marginTop="76dp"
         android:ems="10"
         android:hint="@string/enter_order_number_text"
-        android:inputType="textPersonName"
+        android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/usernameView" />
@@ -35,7 +35,6 @@
         android:layout_width="130dp"
         android:layout_height="32dp"
         android:layout_marginTop="96dp"
-        android:text="TextView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

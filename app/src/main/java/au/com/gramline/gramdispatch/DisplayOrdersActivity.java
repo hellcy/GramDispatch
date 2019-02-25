@@ -29,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.sql.Date;
 import java.util.List;
 
 public class DisplayOrdersActivity extends AppCompatActivity {
@@ -50,7 +51,6 @@ public class DisplayOrdersActivity extends AppCompatActivity {
 
         context = getApplicationContext();
 
-        responseText = (TextView) findViewById(R.id.responseText);
         apiInterface = APIClient.getClient().create(APIInterface.class);
 
         // Get the Intent that started this activity and extract the string
@@ -78,13 +78,13 @@ public class DisplayOrdersActivity extends AppCompatActivity {
                 List<JobOrderList.JobOrder> dataList = resource.data;
 
                 for (JobOrderList.JobOrder joborder : dataList) {
-                    Toast.makeText(getApplicationContext(), joborder.SEQNO + " " + joborder.DESCRIPTION + " " + joborder.QTYREQD + "\n", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), joborder.SEQNO + " " + joborder.DESCRIPTION + " " + joborder.ORD_QUANT + "\n", Toast.LENGTH_SHORT).show();
                 }
 
                 for (JobOrderList.JobOrder joborder : dataList) {
                     // Create a new table row.
                     TableRow tableRow = new TableRow(context);
-                    CollectedOrderList.CollectedOrder orderItem = new CollectedOrderList.CollectedOrder(0,0,"",0,0,"");
+                    CollectedOrderList.CollectedOrder orderItem = new CollectedOrderList.CollectedOrder();
                     // Set new table row layout parameters.
                     TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1);
 
@@ -95,26 +95,27 @@ public class DisplayOrdersActivity extends AppCompatActivity {
                     orderItem.SEQNO = joborder.SEQNO;
 
                     // Add a TextView in the second column.
-                    TextView description = new TextView(context);
-                    description.setText(joborder.DESCRIPTION);
-                    tableRow.addView(description, 1, new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 4));
-                    orderItem.DESCRIPTION = joborder.DESCRIPTION;
+                    TextView stockCode = new TextView(context);
+                    stockCode.setText(String.valueOf(joborder.STOCKCODE));
+                    tableRow.addView(stockCode, 1,new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 2));
+                    orderItem.STOCKCODE = joborder.STOCKCODE;
 
                     // Add a TextView in the third column.
-                    TextView qtyReqd = new TextView(context);
-                    qtyReqd.setText(String.valueOf(joborder.QTYREQD));
-                    tableRow.addView(qtyReqd, 2, layoutParams);
-                    orderItem.QTYREQD = joborder.QTYREQD;
+                    TextView description = new TextView(context);
+                    description.setText(joborder.DESCRIPTION);
+                    tableRow.addView(description, 2, new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 4));
+                    orderItem.DESCRIPTION = joborder.DESCRIPTION;
 
-                    // Add a EditText in the fourth column.
-                    EditText qtyCollected = new EditText(context);
-                    tableRow.addView(qtyCollected, 3, layoutParams);
-                    qtyCollected.setTag("qtyCollected_" + size);
+                    // Add a TextView in the fourth column.
+                    TextView qtyReqd = new TextView(context);
+                    qtyReqd.setText(String.valueOf(joborder.ORD_QUANT));
+                    tableRow.addView(qtyReqd, 3, layoutParams);
+                    orderItem.ORD_QUANT = joborder.ORD_QUANT.intValue();
 
                     // Add a EditText in the fifth column.
-                    EditText bundle = new EditText(context);
-                    tableRow.addView(bundle, 4, layoutParams);
-                    bundle.setTag("bundle_" + size);
+                    EditText qtyCollected = new EditText(context);
+                    tableRow.addView(qtyCollected, 4, layoutParams);
+                    qtyCollected.setTag("qtyCollected_" + size);
 
                     size++;
                     savedOrder.data.add(orderItem);
@@ -136,14 +137,9 @@ public class DisplayOrdersActivity extends AppCompatActivity {
                 String qtyCollectedValue = qtyCollected.getText().toString();
                 savedOrder.data.get(0).QTYCollected = Integer.parseInt(qtyCollectedValue);
                 EditText bundle = tableLayout.findViewWithTag("bundle_" + 0);
-                String bundleValue = bundle.getText().toString();
-                savedOrder.data.get(0).Bundle = bundleValue;
-                TableRow tableRow = new TableRow(context);
-                TextView test = new TextView(context);
-                test.setText(String.valueOf("Quantity collected: " + savedOrder.data.get(0).QTYCollected));
-                tableRow.addView(test, 0);
-                tableLayout.addView(tableRow);
-
+                //String bundleValue = bundle.getText().toString();
+                savedOrder.data.get(0).Bundle = "A";
+                Toast.makeText(getApplicationContext(), "Data Saved \n", Toast.LENGTH_SHORT).show();
             }
 
         });
@@ -151,64 +147,21 @@ public class DisplayOrdersActivity extends AppCompatActivity {
         uploadOrderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TableRow tableRow = new TableRow(context);
-                TextView test = new TextView(context);
-                test.setText(String.valueOf("Sequence Number:" + savedOrder.data.get(0).SEQNO +
-                                "Description: " + savedOrder.data.get(0).DESCRIPTION +
-                                "Quantity required: " + savedOrder.data.get(0).QTYREQD +
-                                "Quantity collected: " + savedOrder.data.get(0).QTYCollected +
-                                "Bundle: " + savedOrder.data.get(0).Bundle
-                        ));
-                tableRow.addView(test, 0);
-                tableLayout.addView(tableRow);
-
-                /**
-                 Create new user
-                 **/
-//                try {
-//                    JSONObject paramObject = new JSONObject();
-//                    paramObject.put("email", "sample@gmail.com");
-//                    paramObject.put("pass", "4384984938943");
-//
-//                    Call<CollectedOrderList> userCall = apiInterface.createCollectedOrderList(paramObject.toString());
-//                    userCall.enqueue(new Callback<CollectedOrderList>() {
-//                        @Override
-//                        public void onResponse(Call<CollectedOrderList> call, Response<CollectedOrderList> response) {
-//                            String returnString = "Failed!";
-//                            if (response.body() != null)
-//                            {
-//                                returnString = response.body().toString();
-//                            }
-//
-//                            Toast.makeText(getApplicationContext(), returnString, Toast.LENGTH_SHORT).show();
-//                        }
-//                        @Override
-//                        public void onFailure(Call<CollectedOrderList> call, Throwable t) {
-//                            call.cancel();
-//                        }
-//                    });
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-
                 Call<CollectedOrderList> call1 = apiInterface.createCollectedOrderList(savedOrder);
+                // call and response type have to be the same to get a successful callback
                 call1.enqueue(new Callback<CollectedOrderList>() {
                     @Override
                     public void onResponse(Call<CollectedOrderList> call, Response<CollectedOrderList> response) {
-                        String returnString = "Failed!";
-                        if (response.body() != null)
-                        {
-                            returnString = response.body().toString();
-                        }
-
-                        Toast.makeText(getApplicationContext(), returnString, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "File Uploaded \n", Toast.LENGTH_SHORT).show();
                     }
                     @Override
                     public void onFailure(Call<CollectedOrderList> call, Throwable t) {
+                        Toast.makeText(getApplicationContext(), "File failed to upload \n", Toast.LENGTH_SHORT).show();
                         call.cancel();
                     }
                 });
             }
         });
+
     }
 }

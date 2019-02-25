@@ -16,76 +16,102 @@
             android:paddingTop="16dp"
             tools:context="au.com.gramline.gramdispatch.DisplayOrdersActivity">
 
-            <TextView
-                android:id="@+id/responseText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <TableLayout
                 android:id="@+id/table_layout_table"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:shrinkColumns="*"
-                >
-                <TableRow>
-                    <TextView
-                        android:id="@+id/OrderNumberView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_span="3"
-                        />
+                tools:layout_editor_absoluteX="16dp"
+                tools:layout_editor_absoluteY="16dp">
 
-                    <Button
-                        android:id="@+id/saveOrderButton"
-                        android:layout_column="3"
-                        android:text="@string/save_order_button" />
-
-                    <Button
-                        android:id="@+id/uploadOrderButton"
-                        android:layout_column="4"
-                        android:text="@string/upload_order_button" />
-                </TableRow>
-                <!-- Add common columns in the table row. -->
                 <TableRow
                     android:id="@+id/table_layout_row_1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:layout_constraintTop_toTopOf="@+id/table_layout_table"
                     >
 
                     <TextView
+                        android:id="@+id/OrderNumberView"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_width="0dip"
-                        android:layout_weight="1"
-                        android:text="Seq No"/>
+                        />
+
+                </TableRow>
+                <!-- Add common columns in the table row. -->
+                <TableRow
+                    android:id="@+id/table_layout_row_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintTop_toBottomOf="@+id/table_layout_table"
+                    >
 
                     <TextView
+                        android:layout_width="0dip"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/sequence_number_header" />
+
+                    <TextView
                         android:layout_width="0dip"
+                        android:layout_weight="2"
+                        android:text="@string/stockcode_header" />
+
+                    <TextView
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
                         android:layout_weight="4"
-                        android:text="Description" />
+                        android:text="@string/description_header" />
+
                     <TextView
                         android:layout_width="0dip"
                         android:layout_weight="1"
-                        android:text="Qty Required"/>
+                        android:text="@string/qty_required_header" />
+
                     <TextView
                         android:layout_width="0dip"
                         android:layout_weight="1"
-                        android:text="Qty Collected" />
-                    <TextView
-                        android:layout_width="0dip"
-                        android:layout_weight="1"
-                        android:text="Bundle" />
+                        android:text="@string/qty_collected_header" />
+
                 </TableRow>
 
                 <!-- Add a blue line. -->
-                <View
-                    android:background="@color/colorPrimary"
-                    android:layout_height="5dp"/>
+            <View
+                android:layout_width="0dp"
+                android:layout_height="5dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/colorPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/table_layout_row_2"
+                />
             </TableLayout>
+
+            <Button
+                android:id="@+id/saveOrderButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="3"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:text="@string/save_order_button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/table_layout_table" />
+
+            <Button
+                android:id="@+id/uploadOrderButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="4"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="40dp"
+                android:text="@string/upload_order_button"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/table_layout_table" />
         </android.support.constraint.ConstraintLayout>
 </ScrollView>
