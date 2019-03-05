@@ -2,6 +2,7 @@ package au.com.gramline.gramdispatch;
 
 import android.app.ActionBar;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -12,18 +13,20 @@ import android.widget.TextView;
 public class EnterOrderNumberActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE_THREE = "com.example.GramDispatch.MESSAGE";
     public static final String EXTRA_MESSAGE_TWO = "com.example.GramDispatch.MESSAGE2";
+    public static final String MY_PREFS_NAME = "MyPrefsFile";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_order_number);
 
-        // Get the Intent that started this activity and extract the string
-        Intent intent = getIntent();
-        String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
         // Capture the layout's TextView and set the string as its text
         TextView textView = findViewById(R.id.usernameView);
-        textView.setText("You are logged in as: " + message);
+        SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        String username = prefs.getString("username", null);
+        textView.setText("You are logged in as: ");
+        TextView username2 = findViewById(R.id.usernameView2);
+        username2.setText(username);
     }
 
     /** Called when the user taps the get job order button */

@@ -66,7 +66,7 @@ public class DisplayOrdersActivity extends AppCompatActivity {
 
         // Capture the layout's TextView and set the string as its text
         TextView orderNumber = findViewById(R.id.OrderNumberView);
-        orderNumber.setText("Order Number: " + message);
+        orderNumber.setText(getString(R.string.order_number_label, message));
 
         if (resume != null)
         {
@@ -87,7 +87,7 @@ public class DisplayOrdersActivity extends AppCompatActivity {
                     if (qtyCollected.length() != 0)
                     {
                         String qtyCollectedValue = qtyCollected.getText().toString();
-                        savedOrder.results.get(i).QTYCollected = Integer.parseInt(qtyCollectedValue);
+                        savedOrder.results.get(i).QtyCollected = Integer.parseInt(qtyCollectedValue);
                     }
 
                 }
@@ -121,7 +121,7 @@ public class DisplayOrdersActivity extends AppCompatActivity {
     public void writeFileExternalStorage(CollectedOrderList collectedOrderList) {
 
         //Text of the Document
-        String DirName = "orderInfo.txt";
+        String DirName = "order " + message + ".txt";
 
         //Checking the availability state of the External Storage.
         String state = Environment.getExternalStorageState();
@@ -152,12 +152,17 @@ public class DisplayOrdersActivity extends AppCompatActivity {
 
     public CollectedOrderList getOrderFromFile(CollectedOrderList collectedOrderList)
     {
-        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/GramDispatch", "orderInfo.txt");
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/GramDispatch", "order " + message + ".txt");
         try {
             collectedOrderList = mapper.readValue(file, CollectedOrderList.class);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        TextView accNo = findViewById(R.id.AccNoView);
+        accNo.setText(getString(R.string.account_number_label, String.valueOf(collectedOrderList.results.get(0).ACCNO)));
+        TextView orderDate = findViewById(R.id.OrderDateView);
+        orderDate.setText(getString(R.string.order_date_label, collectedOrderList.results.get(0).ORDERDATE));
 
         for (CollectedOrderList.CollectedOrder collectedOrder : collectedOrderList.results) {
             // Create a new table row.
@@ -187,9 +192,9 @@ public class DisplayOrdersActivity extends AppCompatActivity {
 
             // Add a EditText in the fifth column.
             EditText qtyCollected = new EditText(context);
-            if (collectedOrder.QTYCollected != null)
+            if (collectedOrder.QtyCollected != null)
             {
-                qtyCollected.setText(String.valueOf(collectedOrder.QTYCollected));
+                qtyCollected.setText(String.valueOf(collectedOrder.QtyCollected));
             }
             tableRow.addView(qtyCollected, 4, layoutParams);
             qtyCollected.setTag("qtyCollected_" + size);
@@ -215,7 +220,7 @@ public class DisplayOrdersActivity extends AppCompatActivity {
                 Log.d("TAG", response.code() + ""); // success code 200
 
                 JobOrderList resource = response.body();
-                List<JobOrderList.JobOrder> dataList = resource.data;
+                List<JobOrderList.JobOrder> dataList = resource.results;
 
                 for (JobOrderList.JobOrder joborder : dataList) {
                     // Create a new table row.
@@ -254,10 +259,18 @@ public class DisplayOrdersActivity extends AppCompatActivity {
                     qtyCollected.setTag("qtyCollected_" + size);
                     qtyCollected.setInputType(InputType.TYPE_CLASS_NUMBER);
 
+                    orderItem.ACCNO = joborder.ACCNO;
+                    orderItem.ORDERDATE = joborder.ORDERDATE;
+                    orderItem.HDR_SEQNO = joborder.HDR_SEQNO;
+
                     size++;
                     savedOrder.results.add(orderItem);
                     tableLayout.addView(tableRow);
                 }
+                TextView accNo = findViewById(R.id.AccNoView);
+                accNo.setText(getString(R.string.account_number_label, String.valueOf(savedOrder.results.get(0).ACCNO)));
+                TextView orderDate = findViewById(R.id.OrderDateView);
+                orderDate.setText(getString(R.string.order_date_label, savedOrder.results.get(0).ORDERDATE));
             }
             @Override
             public void onFailure (Call < JobOrderList > call, Throwable t){

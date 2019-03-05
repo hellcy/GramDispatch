@@ -9,6 +9,8 @@ import java.util.List;
 public class CollectedOrderList {
     @SerializedName("results")
     public List<CollectedOrder> results = new ArrayList<>();
+    @SerializedName("bundles")
+    public List<Bundle> bundles = new ArrayList<>();
 
     public static class CollectedOrder {
         @SerializedName("SEQNO")
@@ -23,12 +25,22 @@ public class CollectedOrderList {
         public String DESCRIPTION;
         @SerializedName("ORD_QUANT")
         public Integer ORD_QUANT;
+        @SerializedName("ORDERDATE")
+        public String ORDERDATE;
         @SerializedName("QtyCollected")
-        public Integer QTYCollected;
+        public Integer QtyCollected;
+        @SerializedName("QtyPacked")
+        public Integer QtyPacked;
+        @SerializedName("QtyLoaded")
+        public Integer QtyLoaded;
         @SerializedName("Bundle")
         public String Bundle;
-        @SerializedName("ORDERDATE")
-        public Date ORDERDATE;
+    }
 
+    public static class Bundle {
+        @SerializedName("bundle_name")
+        public String bundle_name;
+        @SerializedName("weight")
+        public Integer weight;
     }
 }

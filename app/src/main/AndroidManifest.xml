@@ -15,7 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".EnterOrderNumberActivity">
-
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="au.com.gramline.gramdispatch.EnterOrderNumberActivity" />
         </activity>
         <activity android:name=".DisplayOrdersActivity">
             <meta-data

@@ -8,7 +8,7 @@ import java.util.List;
 
 public class JobOrderList {
     @SerializedName("results")
-    public List<JobOrder> data = new ArrayList<>();
+    public List<JobOrder> results = new ArrayList<>();
 
     public class JobOrder {
         @SerializedName("ORDERDATE")
