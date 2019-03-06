@@ -14,10 +14,11 @@
     <string name="stockcode_header">StockCode</string>
     <string name="description_header">Description</string>
     <string name="qty_required_header">Qty Required</string>
-    <string name="qty_collected_header">Qty Collected</string>
+    <string name="qty_collected_header">Qty Picked</string>
     <string name="continue_order_button">Continue Order</string>
     <string name="order_number_label">Order Number: %1$s </string>
     <string name="account_number_label">Account Number: %1$s </string>
     <string name="order_date_label">Order Date: %1$s </string>
     <string name="next_button">NEXT</string>
+    <string name="qty_packed_header">Qty Packed</string>
 </resources>

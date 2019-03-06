@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/activity_pack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="16dp"
+        tools:context="au.com.gramline.gramdispatch.PackActivity">
+
+        <TableLayout
+            android:id="@+id/pack_table_layout_table"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:shrinkColumns="*"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="16dp">
+
+            <TableRow
+                android:id="@+id/pack_table_layout_row_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@+id/pack_table_layout_table"
+                >
+
+                <TextView
+                    android:id="@+id/OrderNumberView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </TableRow>
+            <TableRow
+                android:id="@+id/pack_table_layout_row_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:id="@+id/AccNoView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/pack_table_layout_row_3"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:paddingBottom="10dp"
+
+                >
+
+                <TextView
+                    android:id="@+id/OrderDateView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </TableRow>
+            <View
+                android:layout_width="100dp"
+                android:layout_height="5dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginEnd="350dp"
+                android:layout_marginRight="350dp"
+                android:background="@color/colorPrimary"
+                />
+            <!-- Add common columns in the table row. -->
+            <TableRow
+                android:id="@+id/pack_table_layout_row_4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/pack_table_layout_table"
+                >
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sequence_number_header" />
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_weight="2"
+                    android:text="@string/stockcode_header" />
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="@string/description_header" />
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_weight="1"
+                    android:text="@string/qty_required_header" />
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_weight="1"
+                    android:text="@string/qty_collected_header" />
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_weight="1"
+                    android:text="@string/qty_packed_header" />
+            </TableRow>
+
+            <!-- Add a blue line. -->
+            <View
+                android:layout_width="0dp"
+                android:layout_height="5dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/colorPrimary"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/pack_table_layout_row_2"
+                />
+        </TableLayout>
+
+        <Button
+            android:id="@+id/saveOrderButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="3"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:text="@string/save_order_button"
+            app:layout_constraintEnd_toStartOf="@+id/nextButton"
+            app:layout_constraintTop_toBottomOf="@+id/pack_table_layout_table" />
+
+        <Button
+            android:id="@+id/uploadOrderButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="5"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="40dp"
+            android:text="@string/upload_order_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pack_table_layout_table" />
+
+        <Button
+            android:id="@+id/nextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="@string/next_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pack_table_layout_table" />
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
         <android.support.constraint.ConstraintLayout
-            android:id="@+id/activity_main"
+            android:id="@+id/activity_display_orders"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="16dp"
@@ -91,7 +91,7 @@
                     <TextView
                         android:layout_width="0dip"
                         android:layout_height="wrap_content"
-                        android:layout_weight="4"
+                        android:layout_weight="2"
                         android:text="@string/description_header" />
 
                     <TextView
@@ -130,7 +130,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:text="@string/save_order_button"
-                app:layout_constraintEnd_toStartOf="@+id/Nextbutton"
+                app:layout_constraintEnd_toStartOf="@+id/nextButton"
                 app:layout_constraintTop_toBottomOf="@+id/table_layout_table" />
 
             <Button
@@ -146,7 +146,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/table_layout_table" />
 
             <Button
-                android:id="@+id/Nextbutton"
+                android:id="@+id/nextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"

@@ -14,6 +14,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".PackActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="au.com.gramline.gramdispatch.PackActivity" />
+        </activity>
         <activity android:name=".EnterOrderNumberActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

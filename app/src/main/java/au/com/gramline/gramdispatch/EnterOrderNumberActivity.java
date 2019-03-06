@@ -35,6 +35,11 @@ public class EnterOrderNumberActivity extends AppCompatActivity {
         EditText editText = (EditText) findViewById(R.id.enterOrderNumberText);
         String message = editText.getText().toString();
         intent.putExtra(EXTRA_MESSAGE_THREE, message);
+
+        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+        editor.putString("orderNumber", editText.getText().toString());
+        editor.apply();
+
         startActivity(intent);
     }
 
@@ -46,6 +51,11 @@ public class EnterOrderNumberActivity extends AppCompatActivity {
         String resume = "resume";
         intent.putExtra(EXTRA_MESSAGE_THREE, message);
         intent.putExtra(EXTRA_MESSAGE_TWO, resume);
+
+        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+        editor.putString("orderNumber", editText.getText().toString());
+        editor.apply();
+
         startActivity(intent);
     }
 }

@@ -36,7 +36,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
 
-public class DisplayOrdersActivity extends AppCompatActivity {
+public class PackActivity extends AppCompatActivity {
     public static final String MY_PREFS_NAME = "MyPrefsFile";
 
     private Context context = null;
@@ -49,12 +49,12 @@ public class DisplayOrdersActivity extends AppCompatActivity {
 
     // Get the Intent that started this activity and extract the string
     Intent intent = null;
-    String message, resume;
+    String message, resume, orderNumber;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_display_orders);
-        tableLayout = (TableLayout)findViewById(R.id.table_layout_table);
+        setContentView(R.layout.activity_pack);
+        tableLayout = (TableLayout)findViewById(R.id.pack_table_layout_table);
         Button saveOrderButton = findViewById(R.id.saveOrderButton);
         Button uploadOrderButton = findViewById(R.id.uploadOrderButton);
         Button nextButton = findViewById(R.id.nextButton);
@@ -69,17 +69,12 @@ public class DisplayOrdersActivity extends AppCompatActivity {
         apiInterface = APIClient.getClient().create(APIInterface.class);
 
         // Capture the layout's TextView and set the string as its text
-        TextView orderNumber = findViewById(R.id.OrderNumberView);
-        orderNumber.setText(getString(R.string.order_number_label, message));
+        SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        orderNumber = prefs.getString("orderNumber", null);
+        TextView orderNumberView = findViewById(R.id.OrderNumberView);
+        orderNumberView.setText(getString(R.string.order_number_label, orderNumber));
 
-        if (resume != null)
-        {
-            savedOrder = getOrderFromFile(savedOrder);
-        }
-        else
-        {
-            getOrderFromDatabase();
-        }
+        savedOrder = getOrderFromFile(savedOrder);
 
         /* When save order button clicked. */
         saveOrderButton.setOnClickListener(new View.OnClickListener() {
@@ -92,6 +87,12 @@ public class DisplayOrdersActivity extends AppCompatActivity {
                     {
                         String qtyCollectedValue = qtyCollected.getText().toString();
                         savedOrder.results.get(i).QtyCollected = Integer.parseInt(qtyCollectedValue);
+                    }
+                    EditText qtyPacked = tableLayout.findViewWithTag("qtyPacked_" + i);
+                    if (qtyPacked.length() != 0)
+                    {
+                        String qtyPackedValue = qtyPacked.getText().toString();
+                        savedOrder.results.get(i).QtyPacked = Integer.parseInt(qtyPackedValue);
                     }
 
                 }
@@ -134,6 +135,12 @@ public class DisplayOrdersActivity extends AppCompatActivity {
                         String qtyCollectedValue = qtyCollected.getText().toString();
                         savedOrder.results.get(i).QtyCollected = Integer.parseInt(qtyCollectedValue);
                     }
+                    EditText qtyPacked = tableLayout.findViewWithTag("qtyPacked_" + i);
+                    if (qtyPacked.length() != 0)
+                    {
+                        String qtyPackedValue = qtyPacked.getText().toString();
+                        savedOrder.results.get(i).QtyPacked = Integer.parseInt(qtyPackedValue);
+                    }
                 }
                 SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
                 String username = prefs.getString("username", null);
@@ -150,7 +157,7 @@ public class DisplayOrdersActivity extends AppCompatActivity {
     public void writeFileExternalStorage(CollectedOrderList collectedOrderList) {
 
         //Text of the Document
-        String DirName = "order " + message + ".txt";
+        String DirName = "order " + orderNumber + ".txt";
 
         //Checking the availability state of the External Storage.
         String state = Environment.getExternalStorageState();
@@ -181,7 +188,9 @@ public class DisplayOrdersActivity extends AppCompatActivity {
 
     public CollectedOrderList getOrderFromFile(CollectedOrderList collectedOrderList)
     {
-        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/GramDispatch", "order " + message + ".txt");
+        SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        String orderNumber = prefs.getString("orderNumber", null);
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/GramDispatch", "order " + orderNumber + ".txt");
         try {
             collectedOrderList = mapper.readValue(file, CollectedOrderList.class);
         } catch (Exception e) {
@@ -229,82 +238,19 @@ public class DisplayOrdersActivity extends AppCompatActivity {
             qtyCollected.setTag("qtyCollected_" + size);
             qtyCollected.setInputType(InputType.TYPE_CLASS_NUMBER);
 
+            // Add a TextView in the sixth column.
+            EditText qtyPacked = new EditText(context);
+            if (collectedOrder.QtyPacked != null)
+            {
+                qtyPacked.setText(String.valueOf(collectedOrder.QtyPacked));
+            }
+            tableRow.addView(qtyPacked, 5, layoutParams);
+            qtyPacked.setTag("qtyPacked_" + size);
+            qtyPacked.setInputType(InputType.TYPE_CLASS_NUMBER);
+
             size++;
             tableLayout.addView(tableRow);
         }
         return collectedOrderList;
-    }
-
-    public void getOrderFromDatabase()
-    {
-        /**
-         * GET List Resources
-         **/
-        Call<JobOrderList> call = apiInterface.doGetJobOrderList(message);
-        call.enqueue(new Callback<JobOrderList>()
-        {
-            @Override
-            public void onResponse (Call < JobOrderList > call, Response< JobOrderList > response){
-
-                Log.d("TAG", response.code() + ""); // success code 200
-
-                JobOrderList resource = response.body();
-                List<JobOrderList.JobOrder> dataList = resource.results;
-
-                for (JobOrderList.JobOrder joborder : dataList) {
-                    // Create a new table row.
-                    TableRow tableRow = new TableRow(context);
-                    CollectedOrderList.CollectedOrder orderItem = new CollectedOrderList.CollectedOrder();
-                    // Set new table row layout parameters.
-                    TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1);
-
-                    // Add a TextView in the first column.
-                    TextView seqNo = new TextView(context);
-                    seqNo.setText(String.valueOf(joborder.SEQNO));
-                    tableRow.addView(seqNo, 0,layoutParams);
-                    orderItem.SEQNO = joborder.SEQNO;
-
-                    // Add a TextView in the second column.
-                    TextView stockCode = new TextView(context);
-                    stockCode.setText(String.valueOf(joborder.STOCKCODE));
-                    tableRow.addView(stockCode, 1,new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 2));
-                    orderItem.STOCKCODE = joborder.STOCKCODE;
-
-                    // Add a TextView in the third column.
-                    TextView description = new TextView(context);
-                    description.setText(joborder.DESCRIPTION);
-                    tableRow.addView(description, 2, new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 2));
-                    orderItem.DESCRIPTION = joborder.DESCRIPTION;
-
-                    // Add a TextView in the fourth column.
-                    TextView qtyReqd = new TextView(context);
-                    qtyReqd.setText(String.valueOf(joborder.ORD_QUANT));
-                    tableRow.addView(qtyReqd, 3, layoutParams);
-                    orderItem.ORD_QUANT = joborder.ORD_QUANT.intValue();
-
-                    // Add a EditText in the fifth column.
-                    EditText qtyCollected = new EditText(context);
-                    tableRow.addView(qtyCollected, 4, layoutParams);
-                    qtyCollected.setTag("qtyCollected_" + size);
-                    qtyCollected.setInputType(InputType.TYPE_CLASS_NUMBER);
-
-                    orderItem.ACCNO = joborder.ACCNO;
-                    orderItem.ORDERDATE = joborder.ORDERDATE;
-                    orderItem.HDR_SEQNO = joborder.HDR_SEQNO;
-
-                    size++;
-                    savedOrder.results.add(orderItem);
-                    tableLayout.addView(tableRow);
-                }
-                TextView accNo = findViewById(R.id.AccNoView);
-                accNo.setText(getString(R.string.account_number_label, String.valueOf(savedOrder.results.get(0).ACCNO)));
-                TextView orderDate = findViewById(R.id.OrderDateView);
-                orderDate.setText(getString(R.string.order_date_label, savedOrder.results.get(0).ORDERDATE));
-            }
-            @Override
-            public void onFailure (Call < JobOrderList > call, Throwable t){
-                call.cancel();
-            }
-        });
     }
 }

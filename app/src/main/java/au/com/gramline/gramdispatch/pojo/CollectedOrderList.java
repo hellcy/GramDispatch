@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CollectedOrderList {
+    @SerializedName("USERNAME")
+    public String USERNAME;
     @SerializedName("results")
     public List<CollectedOrder> results = new ArrayList<>();
     @SerializedName("bundles")
