@@ -1,47 +1,39 @@
 package au.com.gramline.gramdispatch;
 
-import android.app.ActionBar;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Environment;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.text.InputType;
-import android.util.Log;
-
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.io.File;
+import java.util.ArrayList;
+
 import au.com.gramline.gramdispatch.pojo.CollectedOrderList;
-import au.com.gramline.gramdispatch.pojo.JobOrderList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import android.content.Context;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.util.List;
-
-public class DisplayOrdersActivity extends AppCompatActivity {
+public class WeightMeasuringActivity extends AppCompatActivity {
     public static final String MY_PREFS_NAME = "MyPrefsFile";
 
     private Context context = null;
     APIInterface apiInterface;
-    int size; // used to track the number of row under one order
     ObjectMapper mapper = new ObjectMapper();
     CollectedOrderList savedOrder = new CollectedOrderList();
     // Get TableLayout object in layout xml.
@@ -49,19 +41,26 @@ public class DisplayOrdersActivity extends AppCompatActivity {
 
     // Get the Intent that started this activity and extract the string
     Intent intent = null;
-    String resume, orderNumber;
+    String orderNumber;
+    Character bundleName = 'A';
+    Integer bundleCount = 0;
+    int size; // used to track the number of row under one order
+
+    ArrayList<TableRow> rows = new ArrayList<>(); // all table rows
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_display_orders);
-        tableLayout = (TableLayout)findViewById(R.id.table_layout_table);
+        setContentView(R.layout.activity_weight_measuring);
+
+        tableLayout = (TableLayout)findViewById(R.id.weight_table_layout_table);
         Button saveOrderButton = findViewById(R.id.saveOrderButton);
         Button uploadOrderButton = findViewById(R.id.uploadOrderButton);
         Button nextButton = findViewById(R.id.nextButton);
+        Button addBundleButton = findViewById(R.id.addBundleButton);
+        final Button deleteBundleButton = findViewById(R.id.deleteBundleButton);
 
-        size = 0;
         intent = getIntent();
-        resume = intent.getStringExtra(EnterOrderNumberActivity.EXTRA_MESSAGE_TWO);
 
         context = getApplicationContext();
 
@@ -73,14 +72,7 @@ public class DisplayOrdersActivity extends AppCompatActivity {
         TextView orderNumberView = findViewById(R.id.OrderNumberView);
         orderNumberView.setText(getString(R.string.order_number_label, orderNumber));
 
-        if (resume != null)
-        {
-            savedOrder = getOrderFromFile(savedOrder);
-        }
-        else
-        {
-            getOrderFromDatabase();
-        }
+        savedOrder = getOrderFromFile(savedOrder);
 
         /* When save order button clicked. */
         saveOrderButton.setOnClickListener(new View.OnClickListener() {
@@ -94,11 +86,29 @@ public class DisplayOrdersActivity extends AppCompatActivity {
                         String qtyCollectedValue = qtyCollected.getText().toString();
                         savedOrder.results.get(i).QtyCollected = Integer.parseInt(qtyCollectedValue);
                     }
-
+                    EditText qtyPacked = tableLayout.findViewWithTag("qtyPacked_" + i);
+                    if (qtyPacked.length() != 0)
+                    {
+                        String qtyPackedValue = qtyPacked.getText().toString();
+                        savedOrder.results.get(i).QtyPacked = Integer.parseInt(qtyPackedValue);
+                    }
+                    EditText bundle = tableLayout.findViewWithTag("bundle_" + i);
+                    if (bundle.length() != 0)
+                    {
+                        String bundleValue = bundle.getText().toString();
+                        savedOrder.results.get(i).Bundle = bundleValue;
+                    }
                 }
-                SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-                String username = prefs.getString("username", null);
-                savedOrder.USERNAME = username;
+                for (Integer i = 0; i < bundleCount; i++)
+                {
+                    EditText bundle = tableLayout.findViewWithTag("bundleWeight_" + i);
+                    if (bundle.length() != 0)
+                    {
+                        String bundleValue = bundle.getText().toString();
+                        savedOrder.bundles.get(i).weight = Integer.parseInt(bundleValue);
+                        savedOrder.bundles.get(i).bundle_name = (--bundleName).toString();
+                    }
+                }
                 Toast.makeText(getApplicationContext(), "Data Saved \n", Toast.LENGTH_SHORT).show();
                 writeFileExternalStorage(savedOrder);
             }
@@ -135,15 +145,74 @@ public class DisplayOrdersActivity extends AppCompatActivity {
                         String qtyCollectedValue = qtyCollected.getText().toString();
                         savedOrder.results.get(i).QtyCollected = Integer.parseInt(qtyCollectedValue);
                     }
+                    EditText qtyPacked = tableLayout.findViewWithTag("qtyPacked_" + i);
+                    if (qtyPacked.length() != 0)
+                    {
+                        String qtyPackedValue = qtyPacked.getText().toString();
+                        savedOrder.results.get(i).QtyPacked = Integer.parseInt(qtyPackedValue);
+                    }
+                    EditText bundle = tableLayout.findViewWithTag("bundle_" + i);
+                    if (bundle.length() != 0)
+                    {
+                        String bundleValue = bundle.getText().toString();
+                        savedOrder.results.get(i).Bundle = bundleValue;
+                    }
                 }
-                SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-                String username = prefs.getString("username", null);
-                savedOrder.USERNAME = username;
+                for (Integer i = 0; i < bundleCount; i++)
+                {
+                    EditText bundle = tableLayout.findViewWithTag("bundleWeight_" + i);
+                    if (bundle.length() != 0)
+                    {
+                        String bundleValue = bundle.getText().toString();
+                        savedOrder.bundles.get(i).weight = Integer.parseInt(bundleValue);
+                        savedOrder.bundles.get(i).bundle_name = (--bundleName).toString();
+                    }
+                }
                 Toast.makeText(getApplicationContext(), "Data Saved \n", Toast.LENGTH_SHORT).show();
                 writeFileExternalStorage(savedOrder);
-                Intent intent = new Intent(context, PackActivity.class);
+                Intent intent = new Intent(context, WeightMeasuringActivity.class);
                 startActivity(intent);
 
+            }
+        });
+
+        /* When Add Bundle button is clicked. */
+        addBundleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CollectedOrderList.Bundle bundle = new CollectedOrderList.Bundle();
+                savedOrder.bundles.add(bundle);
+                TableRow tableRow = new TableRow(context);
+                rows.add(tableRow);
+                TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1);
+                TextView tableName = new TextView(context);
+                tableName.setTag("bundle_" + bundleName);
+                tableName.setText("Bundle " + bundleName);
+                bundleName++;
+
+                EditText bundleWeight = new EditText(context);
+                bundleWeight.setTag("bundleWeight_" + bundleCount);
+                bundleWeight.setInputType(InputType.TYPE_CLASS_NUMBER);
+                bundleWeight.setHint("Weight");
+                bundleCount++;
+
+                tableRow.addView(tableName,layoutParams);
+                tableRow.addView(bundleWeight,layoutParams);
+                tableLayout.addView(tableRow);
+                if (bundleCount > 0) deleteBundleButton.setEnabled(true);
+            }
+        });
+
+        /* When DELETE Bundle button is clicked. */
+        deleteBundleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                savedOrder.bundles.remove(bundleCount - 1);
+                tableLayout.removeView(rows.get(savedOrder.results.size() + bundleCount - 1));
+                rows.remove(savedOrder.results.size() + bundleCount - 1);
+                bundleCount--;
+                bundleName--;
+                if (bundleCount == 0) deleteBundleButton.setEnabled(false);
             }
         });
     }
@@ -182,6 +251,8 @@ public class DisplayOrdersActivity extends AppCompatActivity {
 
     public CollectedOrderList getOrderFromFile(CollectedOrderList collectedOrderList)
     {
+        SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        String orderNumber = prefs.getString("orderNumber", null);
         File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/GramDispatch", "order " + orderNumber + ".txt");
         try {
             collectedOrderList = mapper.readValue(file, CollectedOrderList.class);
@@ -197,18 +268,19 @@ public class DisplayOrdersActivity extends AppCompatActivity {
         for (CollectedOrderList.CollectedOrder collectedOrder : collectedOrderList.results) {
             // Create a new table row.
             TableRow tableRow = new TableRow(context);
+            rows.add(tableRow);
             // Set new table row layout parameters.
             TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1);
 
             // Add a TextView in the first column.
             TextView seqNo = new TextView(context);
             seqNo.setText(String.valueOf(collectedOrder.SEQNO));
-            tableRow.addView(seqNo, 0,layoutParams);
+            tableRow.addView(seqNo, 0, layoutParams);
 
             // Add a TextView in the second column.
             TextView stockCode = new TextView(context);
             stockCode.setText(String.valueOf(collectedOrder.STOCKCODE));
-            tableRow.addView(stockCode, 1,new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 2));
+            tableRow.addView(stockCode, 1, new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 2));
 
             // Add a TextView in the third column.
             TextView description = new TextView(context);
@@ -222,90 +294,56 @@ public class DisplayOrdersActivity extends AppCompatActivity {
 
             // Add a EditText in the fifth column.
             EditText qtyCollected = new EditText(context);
-            if (collectedOrder.QtyCollected != null)
-            {
+            if (collectedOrder.QtyCollected != null) {
                 qtyCollected.setText(String.valueOf(collectedOrder.QtyCollected));
             }
             tableRow.addView(qtyCollected, 4, layoutParams);
             qtyCollected.setTag("qtyCollected_" + size);
             qtyCollected.setInputType(InputType.TYPE_CLASS_NUMBER);
 
+            // Add a TextView in the sixth column.
+            EditText qtyPacked = new EditText(context);
+            if (collectedOrder.QtyPacked != null) {
+                qtyPacked.setText(String.valueOf(collectedOrder.QtyPacked));
+            }
+            tableRow.addView(qtyPacked, 5, layoutParams);
+            qtyPacked.setTag("qtyPacked_" + size);
+            qtyPacked.setInputType(InputType.TYPE_CLASS_NUMBER);
+
+            // Add a TextView in the seventh column.
+            EditText bundle = new EditText(context);
+            if (collectedOrder.Bundle != null) {
+                bundle.setText(String.valueOf(collectedOrder.Bundle));
+            }
+            tableRow.addView(bundle, 6, layoutParams);
+            bundle.setTag("bundle_" + size);
+            InputFilter[] FilterArray = new InputFilter[1];
+            FilterArray[0] = new InputFilter.LengthFilter(1);
+            bundle.setFilters(FilterArray);
+            bundle.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
             size++;
             tableLayout.addView(tableRow);
         }
-        return collectedOrderList;
-    }
 
-    public void getOrderFromDatabase()
-    {
-        /**
-         * GET List Resources
-         **/
-        Call<JobOrderList> call = apiInterface.doGetJobOrderList(orderNumber);
-        call.enqueue(new Callback<JobOrderList>()
+        for (CollectedOrderList.Bundle bundle : collectedOrderList.bundles)
         {
-            @Override
-            public void onResponse (Call < JobOrderList > call, Response< JobOrderList > response){
+            TableRow tableRow = new TableRow(context);
+            rows.add(tableRow);
+            TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1);
+            TextView tableName = new TextView(context);
+            tableName.setTag("bundle_" + bundleName);
+            tableName.setText("Bundle " + bundleName);
+            bundleName++;
 
-                Log.d("TAG", response.code() + ""); // success code 200
+            EditText bundleWeight = new EditText(context);
+            bundleWeight.setTag("bundleWeight_" + bundleCount);
+            bundleWeight.setInputType(InputType.TYPE_CLASS_NUMBER);
+            bundleCount++;
 
-                JobOrderList resource = response.body();
-                List<JobOrderList.JobOrder> dataList = resource.results;
-
-                for (JobOrderList.JobOrder joborder : dataList) {
-                    // Create a new table row.
-                    TableRow tableRow = new TableRow(context);
-                    CollectedOrderList.CollectedOrder orderItem = new CollectedOrderList.CollectedOrder();
-                    // Set new table row layout parameters.
-                    TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1);
-
-                    // Add a TextView in the first column.
-                    TextView seqNo = new TextView(context);
-                    seqNo.setText(String.valueOf(joborder.SEQNO));
-                    tableRow.addView(seqNo, 0,layoutParams);
-                    orderItem.SEQNO = joborder.SEQNO;
-
-                    // Add a TextView in the second column.
-                    TextView stockCode = new TextView(context);
-                    stockCode.setText(String.valueOf(joborder.STOCKCODE));
-                    tableRow.addView(stockCode, 1,new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 2));
-                    orderItem.STOCKCODE = joborder.STOCKCODE;
-
-                    // Add a TextView in the third column.
-                    TextView description = new TextView(context);
-                    description.setText(joborder.DESCRIPTION);
-                    tableRow.addView(description, 2, new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 2));
-                    orderItem.DESCRIPTION = joborder.DESCRIPTION;
-
-                    // Add a TextView in the fourth column.
-                    TextView qtyReqd = new TextView(context);
-                    qtyReqd.setText(String.valueOf(joborder.ORD_QUANT));
-                    tableRow.addView(qtyReqd, 3, layoutParams);
-                    orderItem.ORD_QUANT = joborder.ORD_QUANT.intValue();
-
-                    // Add a EditText in the fifth column.
-                    EditText qtyCollected = new EditText(context);
-                    tableRow.addView(qtyCollected, 4, layoutParams);
-                    qtyCollected.setTag("qtyCollected_" + size);
-                    qtyCollected.setInputType(InputType.TYPE_CLASS_NUMBER);
-
-                    orderItem.ACCNO = joborder.ACCNO;
-                    orderItem.ORDERDATE = joborder.ORDERDATE;
-                    orderItem.HDR_SEQNO = joborder.HDR_SEQNO;
-
-                    size++;
-                    savedOrder.results.add(orderItem);
-                    tableLayout.addView(tableRow);
-                }
-                TextView accNo = findViewById(R.id.AccNoView);
-                accNo.setText(getString(R.string.account_number_label, String.valueOf(savedOrder.results.get(0).ACCNO)));
-                TextView orderDate = findViewById(R.id.OrderDateView);
-                orderDate.setText(getString(R.string.order_date_label, savedOrder.results.get(0).ORDERDATE));
-            }
-            @Override
-            public void onFailure (Call < JobOrderList > call, Throwable t){
-                call.cancel();
-            }
-        });
+            tableRow.addView(tableName,layoutParams);
+            tableRow.addView(bundleWeight,layoutParams);
+            tableLayout.addView(tableRow);
+        }
+        return collectedOrderList;
     }
 }

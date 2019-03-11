@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 public class EnterOrderNumberActivity extends AppCompatActivity {
-    public static final String EXTRA_MESSAGE_THREE = "com.example.GramDispatch.MESSAGE";
     public static final String EXTRA_MESSAGE_TWO = "com.example.GramDispatch.MESSAGE2";
     public static final String MY_PREFS_NAME = "MyPrefsFile";
 
@@ -33,9 +32,6 @@ public class EnterOrderNumberActivity extends AppCompatActivity {
     public void sendMessage(View view) {
         Intent intent = new Intent(this, DisplayOrdersActivity.class);
         EditText editText = (EditText) findViewById(R.id.enterOrderNumberText);
-        String message = editText.getText().toString();
-        intent.putExtra(EXTRA_MESSAGE_THREE, message);
-
         SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
         editor.putString("orderNumber", editText.getText().toString());
         editor.apply();
@@ -47,9 +43,7 @@ public class EnterOrderNumberActivity extends AppCompatActivity {
     public void continueOrder(View view) {
         Intent intent = new Intent(this, DisplayOrdersActivity.class);
         EditText editText = (EditText) findViewById(R.id.enterOrderNumberText);
-        String message = editText.getText().toString();
         String resume = "resume";
-        intent.putExtra(EXTRA_MESSAGE_THREE, message);
         intent.putExtra(EXTRA_MESSAGE_TWO, resume);
 
         SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();

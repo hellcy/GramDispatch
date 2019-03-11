@@ -49,7 +49,7 @@ public class PackActivity extends AppCompatActivity {
 
     // Get the Intent that started this activity and extract the string
     Intent intent = null;
-    String message, resume, orderNumber;
+    String orderNumber;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,8 +61,6 @@ public class PackActivity extends AppCompatActivity {
 
         size = 0;
         intent = getIntent();
-        message = intent.getStringExtra(EnterOrderNumberActivity.EXTRA_MESSAGE_THREE);
-        resume = intent.getStringExtra(EnterOrderNumberActivity.EXTRA_MESSAGE_TWO);
 
         context = getApplicationContext();
 
@@ -147,7 +145,7 @@ public class PackActivity extends AppCompatActivity {
                 savedOrder.USERNAME = username;
                 Toast.makeText(getApplicationContext(), "Data Saved \n", Toast.LENGTH_SHORT).show();
                 writeFileExternalStorage(savedOrder);
-                Intent intent = new Intent(context, PackActivity.class);
+                Intent intent = new Intent(context, WeightMeasuringActivity.class);
                 startActivity(intent);
 
             }

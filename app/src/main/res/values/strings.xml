@@ -21,4 +21,7 @@
     <string name="order_date_label">Order Date: %1$s </string>
     <string name="next_button">NEXT</string>
     <string name="qty_packed_header">Qty Packed</string>
+    <string name="add_bundle_button">Add Bundle</string>
+    <string name="delete_bundle_button">Delete Bundle</string>
+    <string name="bundle_header">Bundle</string>
 </resources>
