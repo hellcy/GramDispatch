@@ -58,7 +58,7 @@ public class LoadActivity extends AppCompatActivity {
         tableLayout = (TableLayout)findViewById(R.id.load_table_layout_table);
         Button saveOrderButton = findViewById(R.id.saveOrderButton);
         Button uploadOrderButton = findViewById(R.id.uploadOrderButton);
-        Button nextButton = findViewById(R.id.nextButton);
+        Button homeButton = findViewById(R.id.homeButton);
 
         size = 0;
         intent = getIntent();
@@ -131,7 +131,7 @@ public class LoadActivity extends AppCompatActivity {
             }
         });
         /* When HOME button is clicked. */
-        nextButton.setOnClickListener(new View.OnClickListener() {
+        homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 for (int i = 0; i < size; i++)
