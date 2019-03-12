@@ -3,16 +3,25 @@ package au.com.gramline.gramdispatch;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Environment;
+import android.os.Parcel;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.io.File;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import au.com.gramline.gramdispatch.pojo.CollectedOrderList;
 
 public class EnterOrderNumberActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE_TWO = "com.example.GramDispatch.MESSAGE2";
     public static final String MY_PREFS_NAME = "MyPrefsFile";
+    ObjectMapper mapper = new ObjectMapper();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,15 +50,52 @@ public class EnterOrderNumberActivity extends AppCompatActivity {
 
     /** Called when the user taps the continue order button */
     public void continueOrder(View view) {
-        Intent intent = new Intent(this, DisplayOrdersActivity.class);
         EditText editText = (EditText) findViewById(R.id.enterOrderNumberText);
-        String resume = "resume";
-        intent.putExtra(EXTRA_MESSAGE_TWO, resume);
 
         SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
         editor.putString("orderNumber", editText.getText().toString());
         editor.apply();
 
-        startActivity(intent);
+        String resume = "resume";
+
+        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/GramDispatch", "order " + editText.getText().toString() + ".txt");
+        if (!file.exists())
+        {
+            Toast.makeText(getApplicationContext(), "File doesn't exist! \n", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            CollectedOrderList collectedOrderList = new CollectedOrderList();
+            try {
+                collectedOrderList = mapper.readValue(file, CollectedOrderList.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (collectedOrderList.stage == 1)
+            {
+                Intent intent = new Intent(this, DisplayOrdersActivity.class);
+                intent.putExtra(EXTRA_MESSAGE_TWO, resume);
+                startActivity(intent);
+            }
+            else if (collectedOrderList.stage == 2)
+            {
+                Intent intent = new Intent(this, PackActivity.class);
+                intent.putExtra(EXTRA_MESSAGE_TWO, resume);
+                startActivity(intent);
+            }
+            else if (collectedOrderList.stage == 3)
+            {
+                Intent intent = new Intent(this, WeightMeasuringActivity.class);
+                intent.putExtra(EXTRA_MESSAGE_TWO, resume);
+                startActivity(intent);
+            }
+            else if (collectedOrderList.stage == 4)
+            {
+                Intent intent = new Intent(this, LoadActivity.class);
+                intent.putExtra(EXTRA_MESSAGE_TWO, resume);
+                startActivity(intent);
+            }
+        }
+
     }
 }

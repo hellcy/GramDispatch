@@ -168,9 +168,10 @@ public class WeightMeasuringActivity extends AppCompatActivity {
                         savedOrder.bundles.get(i).bundle_name = (--bundleName).toString();
                     }
                 }
+                savedOrder.stage = 4;
                 Toast.makeText(getApplicationContext(), "Data Saved \n", Toast.LENGTH_SHORT).show();
                 writeFileExternalStorage(savedOrder);
-                Intent intent = new Intent(context, WeightMeasuringActivity.class);
+                Intent intent = new Intent(context, LoadActivity.class);
                 startActivity(intent);
 
             }
@@ -331,12 +332,13 @@ public class WeightMeasuringActivity extends AppCompatActivity {
             rows.add(tableRow);
             TableRow.LayoutParams layoutParams = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT, 1);
             TextView tableName = new TextView(context);
-            tableName.setTag("bundle_" + bundleName);
-            tableName.setText("Bundle " + bundleName);
+            tableName.setTag("bundle_" + bundle.bundle_name);
+            tableName.setText("Bundle " + bundle.bundle_name);
             bundleName++;
 
             EditText bundleWeight = new EditText(context);
             bundleWeight.setTag("bundleWeight_" + bundleCount);
+            bundleWeight.setText(bundle.weight.toString());
             bundleWeight.setInputType(InputType.TYPE_CLASS_NUMBER);
             bundleCount++;
 

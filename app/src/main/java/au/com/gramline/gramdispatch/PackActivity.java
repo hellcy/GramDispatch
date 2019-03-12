@@ -143,6 +143,7 @@ public class PackActivity extends AppCompatActivity {
                 SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
                 String username = prefs.getString("username", null);
                 savedOrder.USERNAME = username;
+                savedOrder.stage = 3;
                 Toast.makeText(getApplicationContext(), "Data Saved \n", Toast.LENGTH_SHORT).show();
                 writeFileExternalStorage(savedOrder);
                 Intent intent = new Intent(context, WeightMeasuringActivity.class);

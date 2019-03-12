@@ -71,7 +71,7 @@
                 />
             <!-- Add common columns in the table row. -->
             <TableRow
-                android:id="@+id/pack_table_layout_row_4"
+                android:id="@+id/weight_table_layout_row_4"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/weight_table_layout_table"
@@ -128,7 +128,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/weight_table_layout_row_2"
                 />
             <TableRow
-                android:id="@+id/pack_table_layout_row_5"
+                android:id="@+id/weight_table_layout_row_5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/weight_table_layout_table"

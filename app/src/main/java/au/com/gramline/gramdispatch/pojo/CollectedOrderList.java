@@ -13,6 +13,8 @@ public class CollectedOrderList {
     public List<CollectedOrder> results = new ArrayList<>();
     @SerializedName("bundles")
     public List<Bundle> bundles = new ArrayList<>();
+    @SerializedName("stage")
+    public Integer stage;
 
     public static class CollectedOrder {
         @SerializedName("SEQNO")
